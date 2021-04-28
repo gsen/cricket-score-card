@@ -12,6 +12,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import MailIcon from '@material-ui/icons/Mail';
+import Button from '@material-ui/core/Button';
 import MenuIcon from '@material-ui/icons/Menu';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
@@ -45,6 +46,9 @@ const useStyles = makeStyles((theme) => ({
   },
   // necessary for content to be below app bar
   toolbar: theme.mixins.toolbar,
+  justifyContent:{
+      justifyContent: 'space-between'
+  },
   drawerPaper: {
     width: drawerWidth,
   },
@@ -70,6 +74,10 @@ function Home(props) {
     history.push(`/${page.toLowerCase()}`);
   }
 
+  const onLogout = ()=>{
+      history.push('/login');
+  }
+
   const drawer = (
     <div>
       <div className={classes.toolbar} />
@@ -91,7 +99,7 @@ function Home(props) {
     <div className={classes.root}>
       <CssBaseline />
       <AppBar position="fixed" className={classes.appBar}>
-        <Toolbar>
+        <Toolbar className={classes.justifyContent}>
           <IconButton
             color="inherit"
             aria-label="open drawer"
@@ -102,8 +110,9 @@ function Home(props) {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap>
-            Menu name
+           {selectedMenu?.toUpperCase()}
           </Typography>
+          <Button color="inherit" onClick={onLogout}>Logout</Button>
         </Toolbar>
       </AppBar>
       <nav className={classes.drawer} aria-label="mailbox folders">
