@@ -21,6 +21,7 @@ services:
       # Where our data will be persisted
     volumes:
       - ./sql/schema.sql:/docker-entrypoint-initdb.d/1.schema.sql
+      - ./sql/schema.sql:/docker-entrypoint-initdb.d/2.user.sql
 # Names our volume
 # volumes:
 #   my-db:
