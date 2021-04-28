@@ -54,9 +54,9 @@ export default function SignUp() {
 const signUp= async(e)=>{
   e.preventDefault();
   e.preventDefault();
-  const { firstName, lastName, email, password } = e.target;
+  const { firstName, lastName, username, password } = e.target;
   const id = await createUser({
-    firstName: firstName.value, lastName:lastName.value, username:email.value, password:password.value
+    firstName: firstName.value, lastName:lastName.value, username:username.value, password:password.value
   });
   if(id>0){
     history.push('/login');
@@ -102,10 +102,10 @@ const signUp= async(e)=>{
                 variant="outlined"
                 required
                 fullWidth
-                id="email"
-                label="Email Address"
-                name="email"
-                autoComplete="email"
+                id="username"
+                label="Username"
+                name="username"
+                autoComplete="username"
               />
             </Grid>
             <Grid item xs={12}>
@@ -122,8 +122,8 @@ const signUp= async(e)=>{
             </Grid>
             {/* <Grid item xs={12}>
               <FormControlLabel
-                control={<Checkbox value="allowExtraEmails" color="primary" />}
-                label="I want to receive inspiration, marketing promotions and updates via email."
+                control={<Checkbox value="allowExtrausernames" color="primary" />}
+                label="I want to receive inspiration, marketing promotions and updates via username."
               />
             </Grid> */}
           </Grid>

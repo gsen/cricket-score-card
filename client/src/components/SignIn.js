@@ -53,8 +53,8 @@ export default function SignIn() {
   const history = useHistory();
   const onSubmit = async (e) => {
     e.preventDefault();
-    const { email, password } = e.target;
-    const userInfo = await authenticate(email.value, password.value);
+    const { username, password } = e.target;
+    const userInfo = await authenticate(username.value, password.value);
     if (userInfo) {
       history.push("/");
     }
@@ -76,10 +76,10 @@ export default function SignIn() {
             margin="normal"
             required
             fullWidth
-            id="email"
-            label="Email Address"
-            name="email"
-            autoComplete="email"
+            id="username"
+            label="Username"
+            name="username"
+            autoComplete="username"
             autoFocus
           />
           <TextField
