@@ -4,6 +4,7 @@ import {
   Route,
 } from "react-router-dom";
 import './App.css';
+import Home from "./components/Home";
 import SignIn from "./components/SignIn";
 import SignUp from "./components/SignUp";
 
@@ -18,14 +19,15 @@ function App() {
           <Route path="/about">
            about
           </Route>
-          <Route path="/users">
-           users
-          </Route>
+          
           <Route path="/login">
            <SignIn/>
           </Route>
           <Route path="/signup">
             <SignUp />
+          </Route>
+          <Route path="/">
+           <Home />
           </Route>
         </Switch>
       </div>

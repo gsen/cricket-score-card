@@ -10,7 +10,6 @@
     "nodemon": "^2.0.7"
   },
   "scripts": {
-    "prestart": "docker compose down && docker compose up",
     "start": "nodemon server.js"
   }
 }

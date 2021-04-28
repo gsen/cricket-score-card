@@ -12,6 +12,8 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+import {createUser} from '../service';
+import { useHistory } from 'react-router';
 
 function Copyright() {
   return (
@@ -48,8 +50,17 @@ const useStyles = makeStyles((theme) => ({
 
 export default function SignUp() {
   const classes = useStyles();
-const signUp= (e)=>{
+  const history = useHistory();
+const signUp= async(e)=>{
   e.preventDefault();
+  e.preventDefault();
+  const { firstName, lastName, email, password } = e.target;
+  const id = await createUser({
+    firstName: firstName.value, lastName:lastName.value, username:email.value, password:password.value
+  });
+  if(id>0){
+    history.push('/login');
+  }
 }
   return (
     <Container component="main" maxWidth="xs">

@@ -1,21 +1,28 @@
-const express = require('express')
-const router = express.Router()
-const db = require('./db');
+const express = require("express");
+const router = express.Router();
+const db = require("./db");
 
-// middleware that is specific to this router
-router.use(function timeLog (req, res, next) {
-  console.log('Time: ', Date.now())
-  next()
-})
-// define the home page route
-// router.get('/', function (req, res) {
-//   res.send('Birds home page')
-// })
-// define the about route
-router.get('/', function (req, res) {
-  const {username,password} = req.body;
-  const result = await db.authenticate(username,password);
-  res.send('About birds')
-})
+router.post("/", async (req, res) => {
+  console.log(req.headers);
 
-module.exports = router
+  // verify auth credentials
+  const base64Credentials = req.body.info;
+  const credentials = Buffer.from(base64Credentials, "base64").toString(
+    "ascii"
+  );
+  const [username, password] = credentials.split(":");
+  console.log(username, password);
+  const result = await db.authenticate(username, password);
+  if (result) {
+    res.json({
+      username: result.username,
+      isAdmin: result.is_admin ? true : false,
+      firstName: result.first_name,
+      lastName: result.last_name,
+    });
+  } else {
+    res.json(null);
+  }
+});
+
+module.exports = router;
