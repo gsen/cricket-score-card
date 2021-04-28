@@ -4,6 +4,8 @@ import {
   Route,
 } from "react-router-dom";
 import './App.css';
+import SignIn from "./components/SignIn";
+import SignUp from "./components/SignUp";
 
 function App() {
   return (
@@ -19,8 +21,11 @@ function App() {
           <Route path="/users">
            users
           </Route>
-          <Route path="/">
-           Login
+          <Route path="/login">
+           <SignIn/>
+          </Route>
+          <Route path="/signup">
+            <SignUp />
           </Route>
         </Switch>
       </div>
