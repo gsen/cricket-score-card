@@ -4,20 +4,18 @@ const db = require('./db');
 
 
 router.post('/', async (req, res) =>{
-  const {teamName} = req.body;
+  
   try{
-      const teamId = await db.createTeam(teamName);
-      if(teamId>0){
-        res.status(201).json(teamId);
+      const matchId = await db.createMatch(req.body);
+      if(matchId>0){
+        res.status(201).json(matchId);
       }else{
         res.send(null);
       }
   }catch(error){
-    if(error.code="ER_DUP_ENTRY"){
-      res.status(500).send(`Team with name:${teamName} already created. Please try with a differnt name.`)
-    }else{
+    
       res.status(500).send(error.message);
-    }
+    
   }
 })
 

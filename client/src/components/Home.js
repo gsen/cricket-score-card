@@ -20,6 +20,7 @@ import { makeStyles, useTheme } from '@material-ui/core/styles';
 import { Route, Switch, useHistory } from 'react-router';
 import { useState } from 'react';
 import Teams from './team/Teams';
+import Match from './match/Match';
 
 const drawerWidth = 240;
 
@@ -154,7 +155,7 @@ function Home(props) {
                     Players component
                 </Route>
                 <Route path="/matches">
-                    Matches component
+                    <Match/>
                 </Route>
                 <Route path="/">
                    <Teams />

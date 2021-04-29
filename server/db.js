@@ -48,4 +48,24 @@ const pool = mysql.createPool({
   }
   
 
+  // related to match
+
+  exports.createMatch = async(match)=>{
+    const {team1, team2, matchDate, winner} = match;
+    let [result] = await pool.execute('insert into match_tbl(`team1`,`team2`, `winner`, `match_date`) values (?,?,?,?);',[team1,team2,winner,matchDate]);
+    return result.insertId;
+  }
+  
+
+  exports.addPlayerScore = async(playerScore)=>{
+    const {playerId, matchId, score, id= undefined} = playerScore;
+    if(!id){
+      let [result] = await pool.execute('insert into player_score_tbl(`player_id`,`match_id`, `score`) values (?,?,?);',[playerId, matchId, score]);
+      return result.insertId;
+    }else if(id> 0){
+      let [result] = await pool.execute('update player_score_tbl set `player_id` = ? and `match_id` = ? and  `score` = ? where id = ?;',[playerId, matchId, score, id]);
+      return result.changedRows;
+    }
+  }
+
 

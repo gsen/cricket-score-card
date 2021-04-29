@@ -11,8 +11,7 @@ app.use(express.json());
 app.use('/user',user);
 app.use('/auth',auth);
 app.use('/team',team);
-
-app.user('/player',player);
+app.use('/player',player);
 app.listen(3001,()=> {
 //    db.main()
 console.log('server started')

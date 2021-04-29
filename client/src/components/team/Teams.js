@@ -8,7 +8,7 @@ function Teams() {
     <div>
      
       <Switch>
-        <Route path="/teams/new">
+        <Route exact path="/teams/new">
           <AddTeam />
         </Route>
         <Route path="/teams/edit/:teamId/:name" component={AddTeam} />

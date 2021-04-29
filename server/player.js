@@ -17,6 +17,22 @@ router.post('/', async (req, res) =>{
     
   }
 })
+router.post('/score', async (req, res) =>{
+  try{
+      const scoreId = await db.addPlayerScore(req.body);
+      if(scoreId>0){
+        res.status(201).json(scoreId);
+      }else{
+        res.send(null);
+      }
+  }catch(error){
+    
+      res.status(500).send(error.message);
+    
+  }
+})
+
+
 
 router.get('/', async (req, res) =>{
   res.json(await db.getAllTeams());
