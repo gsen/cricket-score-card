@@ -19,6 +19,7 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import { Route, Switch, useHistory } from 'react-router';
 import { useState } from 'react';
+import Teams from './team/Teams';
 
 const drawerWidth = 240;
 
@@ -156,7 +157,7 @@ function Home(props) {
                     Matches component
                 </Route>
                 <Route path="/">
-                    Teams component
+                   <Teams />
                 </Route>
             </Switch>
       </main>
