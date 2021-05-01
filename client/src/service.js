@@ -37,3 +37,49 @@ export const listTeams = async()=>{
         const result = await axios.get(`${SERVER_URL}/team/all`);
        return result.data;
 }
+
+export const getPlayers = async(teamId)=>{
+    const url = teamId? `player?teamId=${teamId}`: `player`
+    const result = await axios.get(`${SERVER_URL}/${url}`);
+   return result.data;
+}
+
+export const addPlayer = async(player)=>{
+    try{
+        const result = await axios.post(`${SERVER_URL}/player`, player);
+       return result.data;
+    }catch(error){
+        console.log('error',error.response);
+       throw error.response.data;
+    }
+}
+
+export const addMatch = async(match)=>{
+    try{
+        const result = await axios.post(`${SERVER_URL}/match`, match);
+       return result.data;
+    }catch(error){
+        console.log('error',error.response);
+       throw error.response.data;
+    }
+}
+
+export const listMatches = async(teamId)=>{
+    const result = await axios.get(`${SERVER_URL}/match?teamId=${teamId}`);
+   return result.data;
+}
+
+export const getScorecard = async(matchId)=>{
+    const result = await axios.get(`${SERVER_URL}/match/${matchId}/scorecard`);
+    return result.data;
+}
+
+export const saveScoreCard = async(matchId,scoreCard)=>{
+    try{
+        const result = await axios.post(`${SERVER_URL}/match/${matchId}/scorecard`, scoreCard);
+       return result.data;
+    }catch(error){
+        console.log('error',error.response);
+       throw error.response.data;
+    }
+}

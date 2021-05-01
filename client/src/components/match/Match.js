@@ -2,10 +2,16 @@ import React from "react";
 import { Link, Route, Switch } from "react-router-dom";
 import { Button } from "@material-ui/core";
 import AddEditMatch from "./AddEditMatch";
+import ListMatch from "./ListMatch";
+import ScoreCard from "./ScoreCard";
+import EditScoreCard from "./EditScoreCard";
 function Match() {
   return (
     <div>
       <Switch>
+          
+         <Route path ="/matches/scorecard/edit" component={EditScoreCard} />
+         <Route path ="/matches/scorecard" component={ScoreCard} />
         <Route exact path="/matches/new">
             <AddEditMatch />
         </Route>
@@ -15,7 +21,7 @@ function Match() {
             <Link to="/matches/new">Add a Match</Link>
           </Button>
           <div>
-           List of Matches
+           <ListMatch />
           </div>
         </Route>
       </Switch>

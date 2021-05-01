@@ -1,11 +1,25 @@
 const express = require('express')
 const router = express.Router()
 const db = require('./db');
+const multer = require('multer');
+const path = require('path');
+// create a folder called uploads
+//define storage for where file is to be uploaded
+let storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+      cb(null, path.join(__dirname, '/uploads/'))
+  },
+  filename: (req, file, cb) => {
+      cb(null, file.fieldname + '-' + Date.now()+ file.mimetype.replace('image/','.'))
+  }
+});
 
+// using multer to upload file
+var upload = multer({ storage: storage });
 
-router.post('/', async (req, res) =>{
+router.post('/',upload.single('image'), async (req, res) =>{
   try{
-      const playerId = await db.createPlayer(req.body);
+      const playerId = await db.createPlayer(req.body, `/uploads/${req.file.filename}`);
       if(playerId>0){
         res.status(201).json(playerId);
       }else{
@@ -17,25 +31,13 @@ router.post('/', async (req, res) =>{
     
   }
 })
-router.post('/score', async (req, res) =>{
-  try{
-      const scoreId = await db.addPlayerScore(req.body);
-      if(scoreId>0){
-        res.status(201).json(scoreId);
-      }else{
-        res.send(null);
-      }
-  }catch(error){
-    
-      res.status(500).send(error.message);
-    
-  }
-})
+
 
 
 
 router.get('/', async (req, res) =>{
-  res.json(await db.getAllTeams());
+  const {teamId=null} = req.query
+   res.json(await db.getPlayers(teamId));
 })
 
 router.put('/', async (req, res) =>{

@@ -40,22 +40,44 @@ const pool = mysql.createPool({
     return rows
   }
 
+  exports.getTeam = async(teamId)=>{
+    let [rows] = await pool.execute('select `name` as teamName, `team_id` as teamId from team_tbl where team_id = ?',[teamId]);
+    return rows?.length>0?rows[0]:null;
+  }
+
   // related to player
-  exports.createPlayer = async(player)=>{
-    const {firstName, lastName, teamId, image} = player;
-    let [result] = await pool.execute('insert into team_tbl(`first_name`,`last_name`, `teamId`, `image`) values (?,?,?,?);',[firstName,lastName,teamId,image]);
+  exports.createPlayer = async(player, imageName)=>{
+    const {firstName, lastName, teamId} = player;
+    let [result] = await pool.execute('insert into player_tbl(`first_name`,`last_name`, `team_Id`, `image`) values (?,?,?,?);',[firstName,lastName,parseInt(teamId),imageName]);
     return result.insertId;
   }
-  
 
+  exports.getPlayers = async(teamId)=>{
+    if(teamId){
+      let [rows] = await pool.execute('select `player_id` as id, `first_name` as firstName, `last_name` as lastName from player_tbl where team_id = ?;',[teamId]);
+    return rows;
+    }
+    let [rows] = await pool.execute('select `player_id` as id, `first_name` as firstName, `last_name` as lastName, `team_id` as teamId from player_tbl;');
+    return rows;
+  }
+  
+  
   // related to match
+  exports.getMatches = async(teamId)=>{
+    let [rows] = await pool.execute('select `match_id` as matchId, `team1`, `team2`, `winner`, `match_date` as matchDate from match_tbl where `team1` = ? or `team2` =?',[teamId, teamId]);
+    return rows;
+  }
 
   exports.createMatch = async(match)=>{
     const {team1, team2, matchDate, winner} = match;
-    let [result] = await pool.execute('insert into match_tbl(`team1`,`team2`, `winner`, `match_date`) values (?,?,?,?);',[team1,team2,winner,matchDate]);
+    let [result] = await pool.execute('insert into match_tbl(`team1`,`team2`, `winner`, `match_date`) values (?,?,?,?);',[team1,team2,winner,matchDate.slice(0, 19).replace('T', ' ')]);
     return result.insertId;
   }
-  
+
+  exports.getScoreCard = async(matchId)=>{
+    let [rows] = await pool.execute('select `id`, `match_id` as matchId, `player_id` as playerId, `score` from player_score_tbl where `match_id` = ?',[matchId]);
+    return rows;
+  }
 
   exports.addPlayerScore = async(playerScore)=>{
     const {playerId, matchId, score, id= undefined} = playerScore;

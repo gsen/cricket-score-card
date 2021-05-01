@@ -21,6 +21,7 @@ import { Route, Switch, useHistory } from 'react-router';
 import { useState } from 'react';
 import Teams from './team/Teams';
 import Match from './match/Match';
+import Player from './palyer/Player';
 
 const drawerWidth = 240;
 
@@ -152,7 +153,7 @@ function Home(props) {
         <div className={classes.toolbar} />
             <Switch>
                 <Route path="/players">
-                    Players component
+                 <Player />
                 </Route>
                 <Route path="/matches">
                     <Match/>
