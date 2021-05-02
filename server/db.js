@@ -40,6 +40,13 @@ const pool = mysql.createPool({
     return rows
   }
 
+  exports.getTeamStats = async(teamId)=>{
+    let [rows] = await pool.query(`select count(match_id) as matchesPlayed from match_tbl where team1 = ${teamId} or team2 = ${teamId};`);
+    let [win] = await pool.query(`select count(winner) as matchesWon from match_tbl where winner = ${teamId};`)
+    let [players] = await pool.query(`select first_name as firstName, last_name as lastName, image from player_tbl where team_id = ${teamId};  `);
+    return {matchesPlayed: rows[0].matchesPlayed, matchesWon: win[0].matchesWon, players};
+  }
+
   exports.getTeam = async(teamId)=>{
     let [rows] = await pool.execute('select `name` as teamName, `team_id` as teamId from team_tbl where team_id = ?',[teamId]);
     return rows?.length>0?rows[0]:null;
@@ -52,12 +59,24 @@ const pool = mysql.createPool({
     return result.insertId;
   }
 
+  exports.updatePlayer = async(player, imageName)=>{
+    const {firstName, lastName, id} = player;
+    let [row] = await pool.execute('update player_tbl set `first_name` = ?,`last_name` = ? ,`image` = ? where `player_id` = ?',[firstName,lastName,imageName, id]);
+    return row.changedRows;
+  }
+
   exports.getPlayers = async(teamId)=>{
     if(teamId){
-      let [rows] = await pool.execute('select `player_id` as id, `first_name` as firstName, `last_name` as lastName from player_tbl where team_id = ?;',[teamId]);
+      let [rows] = await pool.query('select t.player_id as id, first_name as firstName, last_name as lastName, t.team_id as teamId, team.name as teamName, image, IFNULL(ms.matchCount,0) as matchesPlayed, IFNULL(ms.totalScore,0) as totalRuns from player_tbl t ' 
+    +'inner join team_tbl team on team.team_id = t.team_id '+
+    'left join (select player_Id, Count(match_id) as matchCount, Sum(score) as totalScore from player_score_tbl group by player_id) as ms '
+    +'on t.player_id = ms.player_id where team.team_id = ' +teamId);
     return rows;
     }
-    let [rows] = await pool.execute('select `player_id` as id, `first_name` as firstName, `last_name` as lastName, `team_id` as teamId from player_tbl;');
+    let [rows] = await pool.query('select t.player_id as id, first_name as firstName, last_name as lastName, t.team_id as teamId, team.name as teamName,image, IFNULL(ms.matchCount,0) as matchesPlayed, IFNULL(ms.totalScore,0) as totalRuns from player_tbl t ' 
+    +'inner join team_tbl team on team.team_id = t.team_id '+
+    'left join (select player_Id, Count(match_id) as matchCount, Sum(score) as totalScore from player_score_tbl group by player_id) as ms '
+    +'on t.player_id = ms.player_id');
     return rows;
   }
   
@@ -85,7 +104,7 @@ const pool = mysql.createPool({
       let [result] = await pool.execute('insert into player_score_tbl(`player_id`,`match_id`, `score`) values (?,?,?);',[playerId, matchId, score]);
       return result.insertId;
     }else if(id> 0){
-      let [result] = await pool.execute('update player_score_tbl set `player_id` = ? and `match_id` = ? and  `score` = ? where id = ?;',[playerId, matchId, score, id]);
+      let [result] = await pool.execute('update player_score_tbl set `score` = ? where id = ?;',[score, id]);
       return result.changedRows;
     }
   }

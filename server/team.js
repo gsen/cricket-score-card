@@ -25,6 +25,10 @@ router.get('/all', async (req, res) =>{
   res.json(await db.getAllTeams());
 })
 
+router.get('/:teamId/stats', async(req,res)=>{
+  res.json(await db.getTeamStats(req.params.teamId))
+})
+
 router.put('/', async (req, res) =>{
   const {teamName, teamId} = req.body;
   try{

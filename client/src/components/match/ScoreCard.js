@@ -11,10 +11,32 @@ const useStyles = makeStyles((theme) => ({
   },
   team1: {
     flex: "1",
+    padding: theme.spacing(2),
+    border: `1px solid`,
+    "& .list":{
+        display:'flex',
+        justifyContent:'space-between'
+    }
   },
   team2: {
     flex: "1",
+    padding: theme.spacing(2),
+    border: `1px solid`,
+    borderLeft:0,
+    "& .list":{
+        display:'flex',
+        justifyContent:'space-between'
+    }
   },
+  main:{
+      display:'flex',
+      flexDirection:'column',
+      gap:theme.spacing(1),
+
+      "& .edit":{
+          alignSelf:'flex-end'
+      }
+  }
 }));
 
 function ScoreCard({ location }) {
@@ -23,6 +45,8 @@ function ScoreCard({ location }) {
   const theme = useTheme();
   const [value, setValue] = React.useState(0);
   const [scoreCard, setScoreCard] = useState(null);
+  const [team1Runs, setTeam1Runs] = useState(0);
+  const [team2Runs, setTeam2Runs] = useState(0);
   const history = useHistory();
   useEffect(() => {
     getScorecard(id).then((scoreCard) => {
@@ -40,17 +64,34 @@ function ScoreCard({ location }) {
     setValue(index);
   };
   return (
-    <>
-      <Button onClick={editScoreCard}>Edit</Button>
+    <div className={classes.main}>
+      <Button className="edit"  variant="outlined"  color="primary" onClick={editScoreCard}>Edit</Button>
       <div className={classes.root}>
         <div className={classes.team1}>
-          <h1>{team1.teamName}</h1>
+          <h1>{team1.teamName} ({scoreCard?.filter(sc=> sc.teamId === team1.teamId)?.reduce((prev,current)=> {
+              return prev + current.score},0)})</h1>
+          {scoreCard?.filter(sc=> sc.teamId === team1.teamId).map(score=>(
+              <div className="list">
+              <div>{score.player.firstName} {score.player.lastName}</div>
+              <div>{score.score}</div>
+              </div>
+          ))}
         </div>
         <div className={classes.team2}>
-          <h1>{team2.teamName}</h1>
+          <h1>{team2.teamName} ({scoreCard?.filter(sc=> sc.teamId === team2.teamId)?.reduce((prev,current)=> prev + current.score,0)})</h1>
+          {scoreCard?.filter(sc=> sc.teamId === team2.teamId).map(score=>
+          {
+           
+             return <div className="list">
+                <div>{score.player.firstName} {score.player.lastName} </div>
+                <div>{score.score}</div>
+              </div>
+          }
+          )}
+          
         </div>
       </div>
-    </>
+    </div>
   );
 }
 

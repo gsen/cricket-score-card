@@ -8,9 +8,11 @@ import { useHistory } from "react-router";
 
 const useStyles = makeStyles((theme) => ({
   root: {
+    display:'flex',
+    alignContent:'center',
     "& .MuiTextField-root": {
-      margin: theme.spacing(1),
       width: 200,
+      marginRight: theme.spacing(1)
     },
   },
 }));

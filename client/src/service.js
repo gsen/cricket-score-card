@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const SERVER_URL = 'http://localhost:3001'
+export const SERVER_URL = 'http://localhost:3001'
 
 export const authenticate = async(username,password)=>{
     const encodedString = btoa(`${username}:${password}`);
@@ -82,4 +82,9 @@ export const saveScoreCard = async(matchId,scoreCard)=>{
         console.log('error',error.response);
        throw error.response.data;
     }
+}
+
+export const teamStats = async(teamId) => {
+    const result = await axios.get(`${SERVER_URL}/team/${teamId}/stats`);
+    return result.data;
 }

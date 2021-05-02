@@ -8,7 +8,7 @@ const player = require('./player');
 const match = require('./match');
 app.use(cors());
 app.use(express.json());
-
+app.use('/uploads', express.static('uploads'))
 app.use('/user',user);
 app.use('/auth',auth);
 app.use('/team',team);

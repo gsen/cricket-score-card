@@ -19,12 +19,21 @@ var upload = multer({ storage: storage });
 
 router.post('/',upload.single('image'), async (req, res) =>{
   try{
+    if(req.body.id){
+      let rowUpdated= await db.updatePlayer(req.body, `/uploads/${req.file.filename}`)
+      if(rowUpdated>0){
+        res.status(201).json(rowUpdated);
+      }else{
+        res.send(null);
+      }
+    }else{
       const playerId = await db.createPlayer(req.body, `/uploads/${req.file.filename}`);
       if(playerId>0){
         res.status(201).json(playerId);
       }else{
         res.send(null);
       }
+    }
   }catch(error){
     
       res.status(500).send(error.message);

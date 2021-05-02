@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -13,6 +13,7 @@ import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import { authenticate } from "../service";
+import {getItem, saveItem} from "../StorageService"
 import { useHistory } from "react-router-dom";
 
 function Copyright() {
@@ -51,11 +52,20 @@ const useStyles = makeStyles((theme) => ({
 export default function SignIn() {
   const classes = useStyles();
   const history = useHistory();
+const user = getItem('user');
+  
+  useEffect(() => {
+    if(user){
+      history.push('/');
+    }
+  }, [])
+
   const onSubmit = async (e) => {
     e.preventDefault();
     const { username, password } = e.target;
     const userInfo = await authenticate(username.value, password.value);
     if (userInfo) {
+      saveItem('user', userInfo);
       history.push("/");
     }
   };

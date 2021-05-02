@@ -7,7 +7,8 @@ import { makeStyles } from "@material-ui/core/styles";
 import { createTeam, listTeams, updateTeam } from "../../service";
 import { useHistory } from "react-router";
 import Autocomplete from "@material-ui/lab/Autocomplete";
-import {addPlayer as createPlayer} from "../../service";
+import {addPlayer as createPlayer, SERVER_URL} from "../../service";
+import { getItem } from "../../StorageService";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -35,13 +36,20 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function AddEditPlayer({ match }) {
+export default function AddEditPlayer({ location }) {
+let {firstName='', lastName='', id=null, image=null, teamId=null} = location?.state||{};
   const classes = useStyles();
   const [team, setTeam] = useState(null);
   const [teams, setTeams] = useState([]);
 
   const imageSelection = useRef(null);
-  const image = useRef(null);
+  const imageElement = useRef(null);
+  const user = getItem('user');
+  useEffect(()=>{
+    if(image){
+        imageElement?.current?.setAttribute('src', `${SERVER_URL}${image}`);
+    }
+  },[])
   useEffect(() => {
     listTeams().then((teams) => {
       setTeams(teams);
@@ -58,6 +66,9 @@ export default function AddEditPlayer({ match }) {
     formData.append('lastName', lastName.value);
     formData.append('teamId', team?.teamId);
     formData.append('image', imageSelection.current?.files[0])
+    if(id){
+        formData.append('id',id);
+    }
     createPlayer(formData)
   };
   const uploadImage = () => {
@@ -65,7 +76,7 @@ export default function AddEditPlayer({ match }) {
   };
   const imageChanged = (e) => {
     const [file] = imageSelection.current.files;
-    image.current.src = URL.createObjectURL(file);
+    imageElement.current.src = URL.createObjectURL(file);
   };
   return (
     <form className={classes.root} autoComplete="off" onSubmit={addPlayer}>
@@ -74,7 +85,7 @@ export default function AddEditPlayer({ match }) {
           width="200px"
           height="200px"
           style={{ objectFit: "cover" }}
-          ref={image}
+          ref={imageElement}
         ></img>
         <Button
           variant="contained"
@@ -96,8 +107,9 @@ export default function AddEditPlayer({ match }) {
           name="firstName"
           id="firstName"
           label="First Name"
-          defaultValue=""
+          defaultValue={firstName}
           variant="outlined"
+          disabled={!user.isAdmin}
         />
 
         <TextField
@@ -105,8 +117,10 @@ export default function AddEditPlayer({ match }) {
           name="lastName"
           id="lastName"
           label="Last Name"
-          defaultValue=""
+          defaultValue={lastName}
           variant="outlined"
+          disabled={!user.isAdmin}
+
         />
 
         <input
@@ -123,6 +137,7 @@ export default function AddEditPlayer({ match }) {
           onChange={(event, newValue) => {
             setTeam(newValue);
           }}
+          disabled={teamId}
           id="teams"
           options={teams}
           getOptionLabel={(option) => option.teamName}

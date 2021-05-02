@@ -4,8 +4,24 @@ import TextField from "@material-ui/core/TextField";
 
 import { listMatches, listTeams } from "../../service";
 import Autocomplete from "@material-ui/lab/Autocomplete";
-import { Button, ButtonGroup } from "@material-ui/core";
+import { Button, ButtonGroup, makeStyles } from "@material-ui/core";
 import { useHistory } from "react-router";
+
+const useStyles = makeStyles((theme)=>({
+    root:{
+        display:'flex',
+        flexDirection:'column',
+        gap:theme.spacing(1)
+    },
+    container:{
+        display:'flex',
+        flexDirection:'column',
+        gap:theme.spacing(1)
+    },
+    scoreCard:{
+        alignSelf:'flex-end'
+    }
+}))
 
 const columns = [
   {
@@ -41,6 +57,8 @@ const columns = [
 ];
 
 export default function ListMatch() {
+    const classes = useStyles();
+
   const [matches, setMatches] = useState([]);
   const [teams, setTeams] = useState(null);
   const [selectedTeam, setSelectedTeam] = useState(null);
@@ -61,9 +79,7 @@ export default function ListMatch() {
         setSelectedMatch(row);
     }
   };
-  const editMatch = ()=>{
 
-  }
 
 const viewScoreCard = ()=>{
     if(selectedMatch){
@@ -79,7 +95,7 @@ const viewScoreCard = ()=>{
   }, [selectedTeam]);
 
   return (
-    <div>
+    <div className={classes.root}>
       <Autocomplete
         value={selectedTeam}
         onChange={(event, newValue) => {
@@ -99,13 +115,12 @@ const viewScoreCard = ()=>{
           />
         )}
       />
-      <div style={{ width: "100%" }}>
-        <ButtonGroup
+      <div className={classes.container} style={{ width: "100%" }}>
+        <ButtonGroup className={classes.scoreCard}
           variant="contained"
           color="primary"
           aria-label="contained primary button group" disabled={!selectedMatch}>
-          <Button onClick={editMatch}>Edit</Button>
-          <Button onClick={viewScoreCard}>Scorecard</Button>
+          <Button  onClick={viewScoreCard}>Scorecard</Button>
         </ButtonGroup>
         <DataGrid
           rows={matches}

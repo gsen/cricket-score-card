@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import AppBar from '@material-ui/core/AppBar';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -6,12 +6,9 @@ import Divider from '@material-ui/core/Divider';
 import Drawer from '@material-ui/core/Drawer';
 import Hidden from '@material-ui/core/Hidden';
 import IconButton from '@material-ui/core/IconButton';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import MailIcon from '@material-ui/icons/Mail';
 import Button from '@material-ui/core/Button';
 import MenuIcon from '@material-ui/icons/Menu';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -22,6 +19,7 @@ import { useState } from 'react';
 import Teams from './team/Teams';
 import Match from './match/Match';
 import Player from './palyer/Player';
+import { getItem, saveItem } from '../StorageService';
 
 const drawerWidth = 240;
 
@@ -67,7 +65,16 @@ function Home(props) {
   const theme = useTheme();
   const [mobileOpen, setMobileOpen] = React.useState(false);
  const [selectedMenu, setSelectedMenu] = useState('teams');
+ const user = getItem('user');
  const history = useHistory();
+
+  
+  useEffect(() => {
+    if(!user){
+      history.push('/login');
+    }
+  }, [])
+
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
@@ -79,6 +86,7 @@ function Home(props) {
 
   const onLogout = ()=>{
       history.push('/login');
+      saveItem('user',null);
   }
 
   const drawer = (
@@ -115,6 +123,9 @@ function Home(props) {
           <Typography variant="h6" noWrap>
            {selectedMenu?.toUpperCase()}
           </Typography>
+          <Typography variant="h6" noWrap>
+           Welcome {user?.firstName}
+          </Typography>
           <Button color="inherit" onClick={onLogout}>Logout</Button>
         </Toolbar>
       </AppBar>
@@ -143,8 +154,7 @@ function Home(props) {
               paper: classes.drawerPaper,
             }}
             variant="permanent"
-            open
-          >
+            open>
             {drawer}
           </Drawer>
         </Hidden>
